@@ -6,11 +6,11 @@ clc, clear, close all, format long
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Definitions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% triedro i = ECI
-% triedro e = ECEF
-% triedro n = ENU
-% triedro l = NED
-% triedo b = BODY
+% frame i = ECI
+% frame e = ECEF
+% frame n = ENU
+% frame l = NED
+% frame b = BODY
 % _X_Y = receiver x, satellite Y
 % _Xx_Yy = receiver x w.r.t. receiver X, satellite y w.r.t. satellite Y
 
@@ -27,7 +27,7 @@ r2b_12 = [a;b;c];
 syms gp positive
 syms ax ay az real
 
-gp2l = [0;0;gp];                                                            % Jiang(1998) (1) / Rogers (11.6)
+gp2l = [0;0;gp];                                                            % Jiang (1998) (1) / Rogers (11.6)
 gp2b = -[ax;ay;az];                                                         % Jiang (10)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRIAD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,7 +46,7 @@ syms dax day daz da db dc dgp real
 
 dCb2l = diff(Cb2l,ax)*dax + diff(Cb2l,ay)*day + diff(Cb2l,az)*daz + diff(Cb2l,a)*da + diff(Cb2l,b)*db + diff(Cb2l,c)*dc + diff(Cb2l,gp)*dgp;  % Savage (3.5.2-1)
 
-E = dCb2l*transpose(Cb2l);                                                  % Savage (3.5.1-2) - adaptado
+E = dCb2l*transpose(Cb2l);                                                  % Savage (3.5.1-2) - adapted
 
 %%%%%%%%%%%%%%%%%%%%%%%% Particular case Cb2l = I %%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -60,13 +60,13 @@ E_sksym = (E - transpose(E))/2;                                             % Sa
 
 varphi_skew = -E_sksym;                                                     % Jiang (19)
 
-eta_n = E_sym(1,1);                                                         % Jiang (41) - erros de normalidade
+eta_n = E_sym(1,1);                                                         % Jiang (41) - normality errors
 eta_e = E_sym(2,2);                                                         % Jiang (42)
 eta_d = E_sym(3,3);                                                         % Jiang (43)
-o_n = E_sym(2,3);                                                           % Jiang (40) - erros de ortogonalidade
+o_n = E_sym(2,3);                                                           % Jiang (40) - orthogonality errors
 o_e = E_sym(1,3);                                                           % Jiang (40)
 o_d = E_sym(1,2);                                                           % Jiang (40)
-varphi_n = E_sksym(2,3);                                                    % Jiang (37) - erros de alinhamento
+varphi_n = E_sksym(2,3);                                                    % Jiang (37) - alignment errors
 varphi_e = -E_sksym(1,3);                                                   % Jiang (38)
 varphi_d = E_sksym(1,2);                                                    % Jiang (39)
 
@@ -109,13 +109,13 @@ x = eta_n;
 % x = varphi_e;
 % x = varphi_d;
 
-% dxdax = collect(simplify(subs(x,{day,daz,da,db,dc,dgp},{0,0,0,0,0,0})),dax); % termos de 'x' dependentes de dax
-% dxday = collect(simplify(subs(x,{dax,daz,da,db,dc,dgp},{0,0,0,0,0,0})),day); % termos de 'x' dependentes de day
-% dxdaz = collect(simplify(subs(x,{dax,day,da,db,dc,dgp},{0,0,0,0,0,0})),daz); % termos de 'x' dependentes de daz
-% dxda = collect(simplify(subs(x,{dax,day,daz,db,dc,dgp},{0,0,0,0,0,0})),da); % termos de 'x' dependentes de da
-% dxdb = collect(simplify(subs(x,{dax,day,daz,da,dc,dgp},{0,0,0,0,0,0})),db); % termos de 'x' dependentes de db
-% dxdc = collect(simplify(subs(x,{dax,day,daz,da,db,dgp},{0,0,0,0,0,0})),dc); % termos de 'x' dependentes de dc
-% dxdgp = collect(simplify(subs(x,{dax,day,daz,da,db,dc},{0,0,0,0,0,0})),dgp); % termos de 'x' dependentes de dgp
+% dxdax = collect(simplify(subs(x,{day,daz,da,db,dc,dgp},{0,0,0,0,0,0})),dax); % terms of 'x' dependent on dax
+% dxday = collect(simplify(subs(x,{dax,daz,da,db,dc,dgp},{0,0,0,0,0,0})),day); % terms of 'x' dependent on day
+% dxdaz = collect(simplify(subs(x,{dax,day,da,db,dc,dgp},{0,0,0,0,0,0})),daz); % terms of 'x' dependent on daz
+% dxda = collect(simplify(subs(x,{dax,day,daz,db,dc,dgp},{0,0,0,0,0,0})),da); % terms of 'x' dependent on da
+% dxdb = collect(simplify(subs(x,{dax,day,daz,da,dc,dgp},{0,0,0,0,0,0})),db); % terms of 'x' dependent on db
+% dxdc = collect(simplify(subs(x,{dax,day,daz,da,db,dgp},{0,0,0,0,0,0})),dc); % terms of 'x' dependent on dc
+% dxdgp = collect(simplify(subs(x,{dax,day,daz,da,db,dc},{0,0,0,0,0,0})),dgp); % terms of 'x' dependent on dgp
 
 % pretty(simplify(dxdax))
 % pretty(simplify(dxday))
@@ -135,13 +135,13 @@ x = eta_n;
 % varphi_e = dxdax + dxday + dxdaz + dxda + dxdb + dxdc + dxdgp;
 % varphi_d = dxdax + dxday + dxdaz + dxda + dxdb + dxdc + dxdgp;
 
-dxdaN = collect(simplify(subs(x,{daE,daD,drN,drE,drD,dgp},{0,0,0,0,0,0})),daN); % termos de 'x' dependentes de daN
-dxdaE = collect(simplify(subs(x,{daN,daD,drN,drE,drD,dgp},{0,0,0,0,0,0})),daE); % termos de 'x' dependentes de daE
-dxdaD = collect(simplify(subs(x,{daN,daE,drN,drE,drD,dgp},{0,0,0,0,0,0})),daD); % termos de 'x' dependentes de daD
-dxdrN = collect(simplify(subs(x,{daN,daE,daD,drE,drD,dgp},{0,0,0,0,0,0})),drN); % termos de 'x' dependentes de drN
-dxdrE = collect(simplify(subs(x,{daN,daE,daD,drN,drD,dgp},{0,0,0,0,0,0})),drE); % termos de 'x' dependentes de drE
-dxdrD = collect(simplify(subs(x,{daN,daE,daD,drN,drE,dgp},{0,0,0,0,0,0})),drD); % termos de 'x' dependentes de drD
-dxdgp = collect(simplify(subs(x,{daN,daE,daD,drN,drE,drD},{0,0,0,0,0,0})),dgp); % termos de 'x' dependentes de dgp
+dxdaN = collect(simplify(subs(x,{daE,daD,drN,drE,drD,dgp},{0,0,0,0,0,0})),daN); % terms of 'x' dependent on daN
+dxdaE = collect(simplify(subs(x,{daN,daD,drN,drE,drD,dgp},{0,0,0,0,0,0})),daE); % terms of 'x' dependent on daE
+dxdaD = collect(simplify(subs(x,{daN,daE,drN,drE,drD,dgp},{0,0,0,0,0,0})),daD); % terms of 'x' dependent on daD
+dxdrN = collect(simplify(subs(x,{daN,daE,daD,drE,drD,dgp},{0,0,0,0,0,0})),drN); % terms of 'x' dependent on drN
+dxdrE = collect(simplify(subs(x,{daN,daE,daD,drN,drD,dgp},{0,0,0,0,0,0})),drE); % terms of 'x' dependent on drE
+dxdrD = collect(simplify(subs(x,{daN,daE,daD,drN,drE,dgp},{0,0,0,0,0,0})),drD); % terms of 'x' dependent on drD
+dxdgp = collect(simplify(subs(x,{daN,daE,daD,drN,drE,drD},{0,0,0,0,0,0})),dgp); % terms of 'x' dependent on dgp
 
 dxdaN = subs(dxdaN,{ax^2 + ay^2 + az^2},{gp^2});
 dxdaE = subs(dxdaE,{ax^2 + ay^2 + az^2},{gp^2});
@@ -255,21 +255,21 @@ dxdrNabc = subs(dxdrN,drN,dr2l(1));
 dxdrEabc = subs(dxdrE,drE,dr2l(2));
 dxdrDabc = subs(dxdrD,drD,dr2l(3));
 
-dxdrNa = collect(simplify(subs(dxdrNabc,{db,dc},{0,0})),da);                % termos de 'dxdrN' dependentes de da
-dxdrNb = collect(simplify(subs(dxdrNabc,{da,dc},{0,0})),db);                % termos de 'dxdrN' dependentes de db
-dxdrNc = collect(simplify(subs(dxdrNabc,{da,db},{0,0})),dc);                % termos de 'dxdrN' dependentes de dc
+dxdrNa = collect(simplify(subs(dxdrNabc,{db,dc},{0,0})),da);                % terms of 'dxdrN' dependent on da
+dxdrNb = collect(simplify(subs(dxdrNabc,{da,dc},{0,0})),db);                % terms of 'dxdrN' dependent on db
+dxdrNc = collect(simplify(subs(dxdrNabc,{da,db},{0,0})),dc);                % terms of 'dxdrN' dependent on dc
 
-dxdrEa = collect(simplify(subs(dxdrEabc,{db,dc},{0,0})),da);                % termos de 'dxdrE' dependentes de da
-dxdrEb = collect(simplify(subs(dxdrEabc,{da,dc},{0,0})),db);                % termos de 'dxdrE' dependentes de db
-dxdrEc = collect(simplify(subs(dxdrEabc,{da,db},{0,0})),dc);                % termos de 'dxdrE' dependentes de dc
+dxdrEa = collect(simplify(subs(dxdrEabc,{db,dc},{0,0})),da);                % terms of 'dxdrE' dependent on da
+dxdrEb = collect(simplify(subs(dxdrEabc,{da,dc},{0,0})),db);                % terms of 'dxdrE' dependent on db
+dxdrEc = collect(simplify(subs(dxdrEabc,{da,db},{0,0})),dc);                % terms of 'dxdrE' dependent on dc
 
-dxdrDa = collect(simplify(subs(dxdrDabc,{db,dc},{0,0})),da);                % termos de 'dxdrD' dependentes de da
-dxdrDb = collect(simplify(subs(dxdrDabc,{da,dc},{0,0})),db);                % termos de 'dxdrD' dependentes de db
-dxdrDc = collect(simplify(subs(dxdrDabc,{da,db},{0,0})),dc);                % termos de 'dxdrD' dependentes de dc
+dxdrDa = collect(simplify(subs(dxdrDabc,{db,dc},{0,0})),da);                % terms of 'dxdrD' dependent on da
+dxdrDb = collect(simplify(subs(dxdrDabc,{da,dc},{0,0})),db);                % terms of 'dxdrD' dependent on db
+dxdrDc = collect(simplify(subs(dxdrDabc,{da,db},{0,0})),dc);                % terms of 'dxdrD' dependent on dc
 
-dxdrNEDa = collect(simplify(dxdrNa + dxdrEa + dxdrDa),da);                  % termos de 'dxdrN + dxdrE + dxdrD' dependentes de da
-dxdrNEDb = collect(simplify(dxdrNb + dxdrEb + dxdrDb),db);                  % termos de 'dxdrN + dxdrE + dxdrD' dependentes de db
-dxdrNEDc = collect(simplify(dxdrNc + dxdrEc + dxdrDc),dc);                  % termos de 'dxdrN + dxdrE + dxdrD' dependentes de dc
+dxdrNEDa = collect(simplify(dxdrNa + dxdrEa + dxdrDa),da);                  % terms of 'dxdrN + dxdrE + dxdrD' dependent on da
+dxdrNEDb = collect(simplify(dxdrNb + dxdrEb + dxdrDb),db);                  % terms of 'dxdrN + dxdrE + dxdrD' dependent on db
+dxdrNEDc = collect(simplify(dxdrNc + dxdrEc + dxdrDc),dc);                  % terms of 'dxdrN + dxdrE + dxdrD' dependent on dc
 
 pretty(simplify(dxdrNEDa))
 pretty(simplify(dxdrNEDb))
@@ -532,13 +532,13 @@ pretty(simplify(varphi_d_eqn40))
 
 clc
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%% teste numérico %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% numerical test %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clc
 
-gSTD = 9.80665;                                                             % standard gravity - para conversao entre m/s² e g
+gSTD = 9.80665;                                                             % standard gravity - for converting between m/sÂ² and g
 
-gP = 9.786466787716226;                                                     % gravidade LINCS
+gP = 9.786466787716226;                                                     % gravity at LINCS
 A = 2;
 B = 0;
 C = 0;                                                                      % baseline coordinates in body-frame
@@ -546,13 +546,13 @@ C = 0;                                                                      % ba
 bDDADR_12_ij = 0;                                                           % double-differenced ADR bias [m]
 bDDADR_12_ik = 0;                                                           % double-differenced ADR bias [m]
 bDDADR_12_il = 0;                                                           % double-differenced ADR bias [m]
-bax = 1*gSTD/1000;                                                          % bias dos acelerômetros (mg)
-bay = -1*gSTD/1000;                                                         % bias dos acelerômetros (mg)
-baz = 1*gSTD/1000;                                                          % bias dos acelerômetros (mg)
-ba = -0.02;                                                                 % bias baseline no eixo x (m)
-bb = 0.02;                                                                  % bias baseline no eixo y (m)
-bc = 0.02;                                                                 % bias baseline no eixo z (m)
-bgrav = -0.005*gSTD/1000;                                                   % bias na gravidade (mg) - Savage
+bax = 1*gSTD/1000;                                                          % x-axis accelerometer bias (mg)
+bay = -1*gSTD/1000;                                                         % y-axis accelerometer bias (mg)
+baz = 1*gSTD/1000;                                                          % z-axis accelerometer bias (mg)
+ba = -0.02;                                                                 % x-axis baseline bias (m)
+bb = 0.02;                                                                  % y-axis baseline bias (m)
+bc = 0.02;                                                                  % z-axis baseline bias (m)
+bgrav = -0.005*gSTD/1000;                                                   % gravity bias (mg) - Savage
 
 eta_n_teste = double(subs(eta_n,{a,b,c,gp,dDDADR_12_ij,dDDADR_12_ik,dDDADR_12_il,dax,day,daz,da,db,dc,dgp},{A,B,C,gP,bDDADR_12_ij,bDDADR_12_ik,bDDADR_12_il,bax,bay,baz,ba,bb,bc,bgrav}));
 eta_e_teste = double(subs(eta_e,{a,b,c,gp,dDDADR_12_ij,dDDADR_12_ik,dDDADR_12_il,dax,day,daz,da,db,dc,dgp},{A,B,C,gP,bDDADR_12_ij,bDDADR_12_ik,bDDADR_12_il,bax,bay,baz,ba,bb,bc,bgrav}));
